@@ -1,0 +1,7 @@
+{
+  "name": "podStation",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
