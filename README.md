@@ -1,3 +1,3 @@
-# podStationPWA
+# podStation Ionic PWA
 
-Placeholder for a future implementation of podStation as a Progressive Web App.
+This repository is anongoing research work that aims to build an offline first progressive web app for subscribing and listening to podcasts.
