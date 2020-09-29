@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "https://podstation.github.io/podstation-ionic-pwa/precache-manifest.44016f4643b707a5f90341c7e72fb9c9.js"
+  "https://podstation.github.io/podstation-ionic-pwa/precache-manifest.915b9ee8be17321a117f6e86c5476dab.js"
 );
 
 self.addEventListener('message', (event) => {

@@ -3,8 +3,8 @@
     "static/js/0.e060f292.chunk.js": "https://podstation.github.io/podstation-ionic-pwa/static/js/0.e060f292.chunk.js",
     "static/js/0.e060f292.chunk.js.map": "https://podstation.github.io/podstation-ionic-pwa/static/js/0.e060f292.chunk.js.map",
     "main.css": "https://podstation.github.io/podstation-ionic-pwa/static/css/main.531bcf0d.chunk.css",
-    "main.js": "https://podstation.github.io/podstation-ionic-pwa/static/js/main.465166df.chunk.js",
-    "main.js.map": "https://podstation.github.io/podstation-ionic-pwa/static/js/main.465166df.chunk.js.map",
+    "main.js": "https://podstation.github.io/podstation-ionic-pwa/static/js/main.f11fc4a8.chunk.js",
+    "main.js.map": "https://podstation.github.io/podstation-ionic-pwa/static/js/main.f11fc4a8.chunk.js.map",
     "polyfills-css-shim.js": "https://podstation.github.io/podstation-ionic-pwa/static/js/polyfills-css-shim.2a37093e.chunk.js",
     "polyfills-css-shim.js.map": "https://podstation.github.io/podstation-ionic-pwa/static/js/polyfills-css-shim.2a37093e.chunk.js.map",
     "runtime-main.js": "https://podstation.github.io/podstation-ionic-pwa/static/js/runtime-main.efd1aed8.js",
@@ -121,7 +121,7 @@
     "static/js/58.ff0a21d2.chunk.js": "https://podstation.github.io/podstation-ionic-pwa/static/js/58.ff0a21d2.chunk.js",
     "static/js/58.ff0a21d2.chunk.js.map": "https://podstation.github.io/podstation-ionic-pwa/static/js/58.ff0a21d2.chunk.js.map",
     "index.html": "https://podstation.github.io/podstation-ionic-pwa/index.html",
-    "precache-manifest.44016f4643b707a5f90341c7e72fb9c9.js": "https://podstation.github.io/podstation-ionic-pwa/precache-manifest.44016f4643b707a5f90341c7e72fb9c9.js",
+    "precache-manifest.915b9ee8be17321a117f6e86c5476dab.js": "https://podstation.github.io/podstation-ionic-pwa/precache-manifest.915b9ee8be17321a117f6e86c5476dab.js",
     "service-worker.js": "https://podstation.github.io/podstation-ionic-pwa/service-worker.js",
     "static/css/4.c6a0278e.chunk.css.map": "https://podstation.github.io/podstation-ionic-pwa/static/css/4.c6a0278e.chunk.css.map",
     "static/css/main.531bcf0d.chunk.css.map": "https://podstation.github.io/podstation-ionic-pwa/static/css/main.531bcf0d.chunk.css.map",
@@ -135,6 +135,6 @@
     "static/css/4.c6a0278e.chunk.css",
     "static/js/4.64e28b03.chunk.js",
     "static/css/main.531bcf0d.chunk.css",
-    "static/js/main.465166df.chunk.js"
+    "static/js/main.f11fc4a8.chunk.js"
   ]
 }
