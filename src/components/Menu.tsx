@@ -12,7 +12,7 @@ import {
 
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { archiveOutline, archiveSharp, bookmarkOutline, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp, searchOutline, searchSharp, homeOutline, homeSharp } from 'ionicons/icons';
 import './Menu.css';
 
 interface AppPage {
@@ -24,11 +24,17 @@ interface AppPage {
 
 const appPages: AppPage[] = [
   {
-    title: 'Add Podcast',
-    url: '/page/AddPodcast',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
+    title: 'Home',
+    url: '/page/Home',
+    iosIcon: homeOutline,
+    mdIcon: homeSharp
   },
+  {
+    title: 'Search Podcast',
+    url: '/page/AddPodcast',
+    iosIcon: searchOutline,
+    mdIcon: searchSharp
+  }/*,
   {
     title: 'Your Podcasts',
     url: '/page/Inbox',
@@ -52,7 +58,7 @@ const appPages: AppPage[] = [
     url: '/page/Inbox',
     iosIcon: mailOutline,
     mdIcon: mailSharp
-  },
+  },*/
 ];
 
 const Menu: React.FC = () => {

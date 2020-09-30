@@ -34,7 +34,7 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 				<IonButtons slot="start">
 					<IonMenuButton />
 				</IonButtons>
-				<IonTitle>Add Podcast</IonTitle>
+				<IonTitle>Search Podcast</IonTitle>
 				</IonToolbar>
 			</IonHeader>
 			
