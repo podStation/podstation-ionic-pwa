@@ -12,7 +12,7 @@ import {
 
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp, searchOutline, searchSharp, homeOutline, homeSharp } from 'ionicons/icons';
+import { searchOutline, searchSharp, homeOutline, homeSharp, gitBranchOutline } from 'ionicons/icons';
 import './Menu.css';
 
 interface AppPage {
@@ -34,31 +34,14 @@ const appPages: AppPage[] = [
     url: '/page/AddPodcast',
     iosIcon: searchOutline,
     mdIcon: searchSharp
-  }/*,
-  {
-    title: 'Your Podcasts',
-    url: '/page/Inbox',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
   },
-  {
-    title: 'Last Episodes',
-    url: '/page/Inbox',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
+  /*{
+    title: 'Source Code',
+    url: 'https://github.com/podStation/podstation-ionic-pwa',
+    iosIcon: gitBranchOutline,
+    mdIcon: gitBranchOutline
   },
-  {
-    title: 'Downloads',
-    url: '/page/Inbox',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
-  },
-  {
-    title: 'Settings',
-    url: '/page/Inbox',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
-  },*/
+  */
 ];
 
 const Menu: React.FC = () => {

@@ -2,12 +2,12 @@ export default class PodcastSearcher {
 	search(searchTerms: string, resultCallback: (result: PodcastSearchResult) => void) {
 		this.searchPodcastindexOrg(searchTerms).then((podcasts) => {
 			resultCallback({
-				podcasts: podcasts
+				items: podcasts
 			});
 		});
 	}
 
-	private async searchPodcastindexOrg(searchTerms: string): Promise<Podcast[]> {
+	private async searchPodcastindexOrg(searchTerms: string): Promise<PodcastSearchResultItem[]> {
 		const AUTH_KEY = 'NUKSUA3RXTJ8AEQPHCNP';
 		const AUTH_SECRET = 'BufqJNuREeuP2ThUMUq55z2A3peQt#bsw$Zdsvc3';
 		const authDate = Math.floor((new Date()).valueOf() / 1000);
@@ -24,7 +24,7 @@ export default class PodcastSearcher {
 		let jsonResponse = await response.json();
 
 		return jsonResponse.feeds.map((feed: any) => 
-			<Podcast> {
+			<PodcastSearchResultItem> {
 				feedUrl: feed.url,
 				title: feed.title,
 				originalImageUrl: feed.image,
@@ -44,10 +44,10 @@ export default class PodcastSearcher {
 }
 
 export class PodcastSearchResult {
-	podcasts: Podcast[] = [];
+	items: PodcastSearchResultItem[] = [];
 }
 
-class Podcast {
+export class PodcastSearchResultItem {
 	feedUrl: string = '';
 	title: string = '';
 	description: string = '';

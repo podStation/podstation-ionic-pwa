@@ -1,28 +1,92 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonSearchbar, IonList, IonItem, IonThumbnail, IonImg, IonLabel, IonButton } from '@ionic/react';
 import React, { FormEvent, useState } from 'react';
 import './Page.css';
-import PodcastSearcher, {PodcastSearchResult} from '../lib/PodcastSearcher';
+import PodcastSearcher, {PodcastSearchResult, PodcastSearchResultItem} from '../lib/PodcastSearcher';
+import SubscriptionHandler, { SubscriptionHandlerImplementation, Subscription} from '../lib/SubscriptionHandler';
+
+class PodcastSearchResultItemWithSubscription extends PodcastSearchResultItem {
+	subscribed: boolean = false;
+}
+
+class PodcastSearchResultWithSubscription {
+	items: PodcastSearchResultItemWithSubscription[] = [];
+}
 
 type AddPodcastPageState = {
-	podcastSearchResult: PodcastSearchResult,
+	podcastSearchResult: PodcastSearchResultWithSubscription,
 	searchText: string
 };
 
 export default class AddPodcastPage extends React.Component<{}, AddPodcastPageState> {
-	handleSubmit(e: FormEvent) {
+	subscriptionHandler: SubscriptionHandler;
+
+	constructor(props: Readonly<{}>) {
+		super(props);
+
+		this.subscriptionHandler = new SubscriptionHandlerImplementation();
+	}
+	
+	handleSearchSubmit(e: FormEvent) {
 		e.preventDefault();
 		let ps: PodcastSearcher = new PodcastSearcher();
 
-		ps.search(this.state.searchText, (result) => {
-			this.setState({
-				podcastSearchResult: result
-			});
+		this.setState({
+			podcastSearchResult: new PodcastSearchResultWithSubscription()
 		});
+
+		ps.search(this.state.searchText, (result) => {
+			let searchResultsWithSubscriptions = this.addDefaultSubscriptionToSearchResults(result);
+			
+			this.subscriptionHandler.getSubscriptions()
+			.then((subscriptions) => {
+				this.setState({
+					podcastSearchResult: this.adjustSubscriptionInSearchResults(searchResultsWithSubscriptions, subscriptions),
+				});
+			})
+		});
+	}
+
+	addDefaultSubscriptionToSearchResults(psr: PodcastSearchResult): PodcastSearchResultWithSubscription {
+		return {
+			items: psr.items.map((item) => {
+				return {
+					...item,
+					subscribed: false
+				}
+			})
+		}
 	}
 
 	componentWillMount() {
 		this.setState({
-			podcastSearchResult: new PodcastSearchResult()
+			podcastSearchResult: new PodcastSearchResultWithSubscription()
+		});
+	}
+
+	handleClickSubscribe(e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>, item: PodcastSearchResultItem): void {
+		this.subscriptionHandler.subscribe(item.feedUrl)
+		.then(() => this.subscriptionHandler.getSubscriptions())
+		.then((subscriptions) => {
+			this.setState({
+				podcastSearchResult: this.adjustSubscriptionInSearchResults(this.state.podcastSearchResult, subscriptions)
+			});
+		});
+	}
+
+	adjustSubscriptionInSearchResults(podcastSearchResult: PodcastSearchResultWithSubscription, subscriptions: Array<Subscription>): PodcastSearchResultWithSubscription {
+		return {
+			items: podcastSearchResult.items.map((item) => {
+				return {
+					...item,
+					subscribed: subscriptions.find((subscription) => subscription.feedUrl === item.feedUrl ) !== undefined
+				}
+			})
+		};
+	}
+	
+	setSearchText(searchText: string): void {
+		this.setState({
+			searchText: searchText
 		});
 	}
 
@@ -45,11 +109,11 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 					<IonTitle size="large">Add Podcast</IonTitle>
 				</IonToolbar>
 				</IonHeader>
-				<form onSubmit={e => this.handleSubmit(e)}>
+				<form onSubmit={e => this.handleSearchSubmit(e)}>
 					<IonSearchbar value={this.state.searchText} debounce={0} onIonChange={e => this.setSearchText(e.detail.value!)}/>
 				</form>
 				<IonList>
-					{this.state.podcastSearchResult.podcasts.map((podcast) => (
+					{this.state.podcastSearchResult.items.map((podcast) => (
 						<IonItem>
 							<IonThumbnail slot="start">
 								<IonImg src={podcast.imageUrl || podcast.originalImageUrl}/>
@@ -58,18 +122,15 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 								<h2>{podcast.title}</h2>
 								<p>{podcast.description}</p>
 							</IonLabel>
-							<IonButton>Subscribe</IonButton>
+							{podcast.subscribed ?
+							<IonButton disabled={true}>Subscribed</IonButton> :
+							<IonButton onClick={e => this.handleClickSubscribe(e, podcast)}>Subscribe</IonButton>
+							}
 						</IonItem>
 					))}
 				</IonList>
 			</IonContent>
 			</IonPage>
 		);
-	}
-	
-	setSearchText(searchText: string): void {
-		this.setState({
-			searchText: searchText
-		});
 	}
 }
