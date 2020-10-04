@@ -64,7 +64,9 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 	}
 
 	handleClickSubscribe(e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>, item: PodcastSearchResultItem): void {
-		this.subscriptionHandler.subscribe(item.feedUrl)
+		this.subscriptionHandler.subscribe({
+			...item
+		})
 		.then(() => this.subscriptionHandler.getSubscriptions())
 		.then((subscriptions) => {
 			this.setState({
