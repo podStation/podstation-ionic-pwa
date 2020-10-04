@@ -1,0 +1,10 @@
+{
+    "[typescript]": {
+        "editor.detectIndentation": false,
+        "editor.insertSpaces": false
+    },
+    "[typescriptreact]": {
+        "editor.detectIndentation": false,
+        "editor.insertSpaces": false
+    }
+}
