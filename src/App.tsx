@@ -28,22 +28,21 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 const App: React.FC = () => {
-
-  return (
-    <IonApp>
-      <IonReactHashRouter>
-        <IonSplitPane contentId="main">
-          <Menu />
-          <IonRouterOutlet id="main">
-            <Route path="/page/:name" component={Page} exact />
-            <Route path="/page/AddPodcast" component={AddPodcastPage} exact />
-            <Route path="/page/Home" component={Home} exact />
-            <Redirect from="/" to="/page/Home" exact />
-          </IonRouterOutlet>
-        </IonSplitPane>
-      </IonReactHashRouter>
-    </IonApp>
-  );
+	return (
+		<IonApp>
+			<IonReactHashRouter>
+				<IonSplitPane contentId="main">
+				<Menu />
+				<IonRouterOutlet id="main">
+					<Route path="/page/:name" component={Page} exact />
+					<Route path="/page/AddPodcast" component={AddPodcastPage} exact />
+					<Route path="/page/Home" component={Home} exact />
+					<Redirect from="/" to="/page/Home" exact />
+				</IonRouterOutlet>
+				</IonSplitPane>
+			</IonReactHashRouter>
+		</IonApp>
+	);
 };
 
 export default App;
