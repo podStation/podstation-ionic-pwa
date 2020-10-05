@@ -27,7 +27,7 @@ export default class PodcastSearcher {
 			<PodcastSearchResultItem> {
 				feedUrl: feed.url,
 				title: feed.title,
-				originalImageUrl: feed.image,
+				imageUrl: feed.image,
 				description: feed.description
 			}
 		);

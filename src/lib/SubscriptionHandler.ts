@@ -4,7 +4,7 @@ export type Podcast = {
 	feedUrl: string,
 	title?: string,
 	description?: string,
-	image?: string
+	imageUrl?: string
 }
 
 export type Subscription = {

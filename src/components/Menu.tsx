@@ -12,7 +12,7 @@ import {
 
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { searchOutline, searchSharp, homeOutline, homeSharp, gitBranchOutline } from 'ionicons/icons';
+import { searchOutline, searchSharp, homeOutline, homeSharp, gitBranchOutline, logoRss} from 'ionicons/icons';
 import './Menu.css';
 
 interface AppPage {
@@ -34,6 +34,12 @@ const appPages: AppPage[] = [
 		url: '/page/AddPodcast',
 		iosIcon: searchOutline,
 		mdIcon: searchSharp
+	},
+	{
+		title: 'Your Podcasts',
+		url: '/page/Podcasts',
+		iosIcon: logoRss,
+		mdIcon: logoRss
 	},
 	/*{
 		title: 'Source Code',
