@@ -25,6 +25,7 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import PodcastsPage from './pages/PodcastsPage';
+import PodcastPage from './pages/PodcastPage';
 
 const App: React.FC = () => {
 	return (
@@ -37,6 +38,7 @@ const App: React.FC = () => {
 						<Route path="/page/AddPodcast" component={AddPodcastPage} exact />
 						<Route path="/page/Home" component={Home} exact />
 						<Route path="/page/Podcasts" component={PodcastsPage} exact />
+						<Route path="/page/Podcast/feed/:encodedFeedUrl" component={PodcastPage} exact />
 						<Redirect from="/" to="/page/Home" exact />
 					</Switch>
 				</IonContent>

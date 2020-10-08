@@ -34,7 +34,7 @@ export default class PodcastsPage extends React.Component<{}, PodcastsPageState>
 				<IonContent fullscreen>
 					<IonList>
 						{this.state.podcasts.map((podcast) => (
-							<IonItem>
+							<IonItem routerLink={`/page/Podcast/feed/${btoa(podcast.feedUrl)}`}>
 								<IonThumbnail slot="start">
 									{podcast.imageUrl && <IonImg src={podcast.imageUrl}/>}
 								</IonThumbnail>

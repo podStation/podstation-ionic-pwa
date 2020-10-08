@@ -10,6 +10,7 @@ export type PodcastView = {
 
 export default interface PodcastsController {
 	getPodcasts(): Promise<Array<PodcastView>>;
+	getPodcast(feedUrl: string): Promise<PodcastView | undefined>;
 }
 
 export class PodcastsControllerImplementation implements PodcastsController {
@@ -22,5 +23,9 @@ export class PodcastsControllerImplementation implements PodcastsController {
 				title: storedPodcast.title ? storedPodcast.title : storedPodcast.feedUrl
 			}
 		});
+	}
+
+	async getPodcast(feedUrl: string): Promise<PodcastView | undefined> {
+		return (await this.getPodcasts()).find((podcastView) => podcastView.feedUrl === feedUrl);
 	}
 }
