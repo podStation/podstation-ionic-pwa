@@ -2,6 +2,7 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import React, { FormEvent, useState } from 'react';
 import PodcastSearcher, {PodcastSearchResult, PodcastSearchResultItem} from '../lib/PodcastSearcher';
 import SubscriptionHandler, { SubscriptionHandlerImplementation, Subscription} from '../lib/SubscriptionHandler';
+import PageWithFooter from './PageWithFooter';
 
 class PodcastSearchResultItemWithSubscription extends PodcastSearchResultItem {
 	subscribed: boolean = false;
@@ -93,7 +94,7 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 
 	render() {
 		return (
-			<IonPage>
+			<PageWithFooter>
 			<IonHeader>
 				<IonToolbar>
 				<IonButtons slot="start">
@@ -131,7 +132,7 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 					))}
 				</IonList>
 			</IonContent>
-			</IonPage>
+			</PageWithFooter>
 		);
 	}
 }

@@ -3,6 +3,8 @@ import React from 'react';
 import PodcastsController, {PodcastsControllerImplementation, PodcastView} from '../lib/PodcastsController';
 import { RouteComponentProps } from "react-router-dom";
 import PodcastindexOrgClient, { PodcastIndexOrgClientImplementation, Episode } from '../lib/PodcastindexOrgClient';
+import PodcastPlayer, { PodcastPlayerSingleton } from '../lib/PodcastPlayer'
+import PageWithFooter from './PageWithFooter';
 
 interface PodcastPageProps extends RouteComponentProps<{
 	encodedFeedUrl: string;
@@ -33,12 +35,14 @@ export default class PodcastPage extends React.Component<PodcastPageProps, Podca
 	}
 
 	handleClickSubscribe(e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>, episode: Episode): void {
-		alert("Not implemented yet");
+		const podcastPlayer = PodcastPlayerSingleton.getInstance();
+
+		podcastPlayer.play(episode);
 	}
 
 	render() {
 		return (
-			<IonPage>
+			<PageWithFooter>
 				<IonHeader>
 					<IonToolbar>
 					<IonButtons slot="start">
@@ -63,7 +67,7 @@ export default class PodcastPage extends React.Component<PodcastPageProps, Podca
 						))}
 					</IonList>
 				</IonContent>
-			</IonPage>
+			</PageWithFooter>
 		);
 	}
 }

@@ -2,12 +2,13 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import React from 'react';
 import { useParams } from 'react-router';
 import ExploreContainer from '../components/ExploreContainer';
+import PageWithFooter from './PageWithFooter';
 
 const Home: React.FC = () => {
 	const { name } = useParams<{ name: string; }>();
 
 	return (
-	<IonPage>
+	<PageWithFooter>
 		<IonHeader>
 			<IonToolbar>
 				<IonButtons slot="start">
@@ -23,7 +24,7 @@ const Home: React.FC = () => {
 			<p>Come back from time to time to see how we are doing.</p>
 			<p>Don't get to attached to any functionality or to your data, this may break or change, it is not ready for use yet</p>
 		</IonContent>
-	</IonPage>
+	</PageWithFooter>
 	);
 };
 

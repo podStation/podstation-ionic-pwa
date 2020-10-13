@@ -2,7 +2,7 @@ import Menu from './components/Menu';
 import AddPodcastPage from './pages/AddPodcastPage'
 import Home from './pages/Home'
 import React from 'react';
-import { IonApp, IonContent, IonRouterOutlet, IonSplitPane } from '@ionic/react';
+import { IonApp, IonButton, IonContent, IonFooter, IonRouterOutlet, IonSplitPane, IonTitle, IonToolbar } from '@ionic/react';
 import { IonReactHashRouter } from '@ionic/react-router';
 import { Redirect, Route, Switch } from 'react-router-dom';
 

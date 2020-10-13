@@ -1,6 +1,7 @@
-import { IonButtons, IonContent, IonHeader, IonImg, IonItem, IonLabel, IonList, IonMenuButton, IonPage, IonThumbnail, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonImg, IonItem, IonLabel, IonList, IonMenuButton, IonPage, IonRange, IonThumbnail, IonTitle, IonToolbar } from '@ionic/react';
 import React from 'react';
 import PodcastsController, {PodcastsControllerImplementation, PodcastView} from '../lib/PodcastsController';
+import PageWithFooter from './PageWithFooter';
 
 class PodcastsPageState {
 	podcasts: Array<PodcastView> = [];
@@ -21,7 +22,7 @@ export default class PodcastsPage extends React.Component<{}, PodcastsPageState>
 
 	render() {
 		return (
-			<IonPage>
+			<PageWithFooter>
 				<IonHeader>
 					<IonToolbar>
 					<IonButtons slot="start">
@@ -46,7 +47,7 @@ export default class PodcastsPage extends React.Component<{}, PodcastsPageState>
 						))}
 					</IonList>
 				</IonContent>
-			</IonPage>
+			</PageWithFooter>
 		);
 	}
 }
