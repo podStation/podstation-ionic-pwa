@@ -1,8 +1,16 @@
 export type Episode = {
+	id: number,
 	title: string,
+	link: string,
 	description: string,
-	enclosureUrl: string,
-	imageUrl: string
+	pubDate: number,
+	enclosure: {
+		url: string,
+		length: number,
+		type: string,
+	},
+	guid: string,
+	imageUrl: string,
 }
 
 export default interface PodcastindexOrgClient {
@@ -22,9 +30,16 @@ export class PodcastIndexOrgClientImplementation implements PodcastindexOrgClien
 
 		return jsonResponse.items.map((item: any) => {
 			return {
+				id: item.id,
 				title: item.title,
+				link: item.link,
 				description: item.description,
-				enclosureUrl: item.enclosureUrl,
+				enclosure: {
+					url: item.enclosureUrl,
+					length: item.enclosureLength,
+					type: item.enclosureType
+				},
+				guid: item.guid,
 				imageUrl: item.image
 			} as Episode
 		})

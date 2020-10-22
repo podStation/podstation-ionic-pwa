@@ -1,21 +1,21 @@
 import { RangeValue } from '@ionic/core';
-import { Episode } from './PodcastindexOrgClient'
+import { EpisodeView } from './PodcastsController'
 
 export type PodcastPlayerState = {
 	hasMedia: boolean,
 	isPlaying: boolean,
 	duration?: number,
 	currentTime?: number,
-	episode?: Episode
+	episode?: EpisodeView
 }
 
 export default interface PodcastPlayer {
 	setCurrentTime(value: number): void;
 	pause(): void;
 	resume(): void;
-	play(episode: Episode): void;
+	play(episode: EpisodeView): void;
 	getPlayerState(): PodcastPlayerState;
-	readonly episode?: Episode;
+	readonly episode?: EpisodeView;
 }
 
 export interface PodcastPlayerObserver {
@@ -25,13 +25,17 @@ export interface PodcastPlayerObserver {
 export class PodcastPlayerSingleton implements PodcastPlayer {
 	private static instance: PodcastPlayerSingleton;
 	private audio: HTMLAudioElement | undefined;
-	private _episode?: Episode;
+	private _episode?: EpisodeView;
 
 	private constructor() {
 
 	}
 
-	play(episode: Episode): void {
+	play(episode: EpisodeView): void {
+		if(!episode.enclosure) {
+			throw new Error('Episodes without enclosure cannot be played');
+		}
+		
 		if(this.audio) {
 			// https://stackoverflow.com/a/28060352/4274827
 			this.audio.pause();
@@ -43,7 +47,7 @@ export class PodcastPlayerSingleton implements PodcastPlayer {
 		}
 		
 		this._episode = episode;
-		this.audio.src = episode.enclosureUrl;
+		this.audio.src = episode.enclosure?.url;
 		this.audio.play();
 	}
 

@@ -1,9 +1,8 @@
 import { IonButton, IonButtons, IonContent, IonHeader, IonImg, IonItem, IonLabel, IonList, IonMenuButton, IonPage, IonThumbnail, IonTitle, IonToolbar } from '@ionic/react';
 import React from 'react';
-import PodcastsController, {PodcastsControllerImplementation, PodcastView} from '../lib/PodcastsController';
+import PodcastsController, {PodcastsControllerImplementation, PodcastView, EpisodeView } from '../lib/PodcastsController';
 import { RouteComponentProps } from "react-router-dom";
-import PodcastindexOrgClient, { PodcastIndexOrgClientImplementation, Episode } from '../lib/PodcastindexOrgClient';
-import PodcastPlayer, { PodcastPlayerSingleton } from '../lib/PodcastPlayer'
+import { PodcastPlayerSingleton } from '../lib/PodcastPlayer'
 import PageWithFooter from './PageWithFooter';
 
 interface PodcastPageProps extends RouteComponentProps<{
@@ -12,12 +11,11 @@ interface PodcastPageProps extends RouteComponentProps<{
 
 type PodcastPageState = {
 	podcast?: PodcastView,
-	episodes?: Array<Episode>
+	episodes?: EpisodeView[]
 }
 
 export default class PodcastPage extends React.Component<PodcastPageProps, PodcastPageState> {
 	podcastsController: PodcastsController = new PodcastsControllerImplementation();
-	podcastindexOrgClient: PodcastindexOrgClient = new PodcastIndexOrgClientImplementation();
 
 	constructor(props: PodcastPageProps) {
 		super(props);
@@ -30,11 +28,11 @@ export default class PodcastPage extends React.Component<PodcastPageProps, Podca
 		});
 
 		this.setState({
-			episodes: await this.podcastindexOrgClient.getEpisodes(atob(this.props.match.params.encodedFeedUrl))
+			episodes: await this.podcastsController.getEpisodes(atob(this.props.match.params.encodedFeedUrl))
 		})
 	}
 
-	handleClickSubscribe(e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>, episode: Episode): void {
+	handleClickPlay(e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>, episode: EpisodeView): void {
 		const podcastPlayer = PodcastPlayerSingleton.getInstance();
 
 		podcastPlayer.play(episode);
@@ -62,7 +60,7 @@ export default class PodcastPage extends React.Component<PodcastPageProps, Podca
 									<h2>{episode.title}</h2>
 									<p>{episode.description}</p>
 								</IonLabel>
-								<IonButton slot="end" onClick={e => this.handleClickSubscribe(e, episode)}>Play</IonButton>
+								<IonButton slot="end" onClick={e => this.handleClickPlay(e, episode)}>Play</IonButton>
 							</IonItem>
 						))}
 					</IonList>

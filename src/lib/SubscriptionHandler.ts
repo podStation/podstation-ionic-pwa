@@ -1,4 +1,4 @@
-import OfflineStorageHandler, {OfflineStorageHandlerImplementation} from './OfflineStorageHandler'
+import PodcastsController, {PodcastsControllerImplementation} from './PodcastsController'
 
 export type Podcast = {
 	feedUrl: string,
@@ -18,18 +18,17 @@ export default interface SubscriptionHandler {
 }
 
 export class SubscriptionHandlerImplementation implements SubscriptionHandler{
-	private offlineStorageHandler: OfflineStorageHandler = new OfflineStorageHandlerImplementation();
+	private podcastsController: PodcastsController = new PodcastsControllerImplementation();
 
 	async subscribe(podcast: Podcast): Promise<void> {
-		this.offlineStorageHandler.storePodcast({
+		return this.podcastsController.addPodcast({
 			...podcast,
 			subscribed: true
-		})
-		return Promise.resolve();
+		});
 	}
 
 	async getSubscriptions(): Promise<Array<Subscription>> {
-		let storedPodcasts = await this.offlineStorageHandler.getPodcasts();
+		let storedPodcasts = await this.podcastsController.getPodcasts();
 		
 		return Promise.resolve((storedPodcasts).filter((podcast) => podcast.subscribed));
 	}
