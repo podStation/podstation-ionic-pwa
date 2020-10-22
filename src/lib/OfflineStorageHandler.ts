@@ -7,8 +7,6 @@ type RequireOnly<T, K extends keyof T> = {
 	[P in K]-?: T[P]
 }
 
-
-
 type RequireOnlyId<T extends {id?: number}> = RequireOnly<T, 'id'>;
 type RequireId<T extends {id?: number}> = Omit<T, 'id'> & {id: number};
 type OmitId<T extends {id?: number}> = Omit<T, 'id'>;
