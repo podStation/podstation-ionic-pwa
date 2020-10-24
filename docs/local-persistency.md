@@ -12,7 +12,9 @@ As a client side podcast aggregator, we will have to store, for instance the fol
 
 ## Podcast data vs user data
 
+One decision to be made soon is whether to have store podcast data (i.e. what comes form the feeds) together or separate with / from user data (i.e. podcast specific configuration, progress of the episodes).
 
+I am more inclined to store it together to facilitate the query of this information.
 
 ## References
 
