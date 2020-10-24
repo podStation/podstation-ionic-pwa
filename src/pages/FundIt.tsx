@@ -13,7 +13,7 @@ const FundIt: React.FC = () => {
 				<IonButtons slot="start">
 					<IonMenuButton />
 				</IonButtons>
-				<IonTitle>Welcome to podStation</IonTitle>
+				<IonTitle>Fund podStation</IonTitle>
 			</IonToolbar>
 		</IonHeader>
 

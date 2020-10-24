@@ -13,7 +13,7 @@ const About: React.FC = () => {
 				<IonButtons slot="start">
 					<IonMenuButton />
 				</IonButtons>
-				<IonTitle>Welcome to podStation</IonTitle>
+				<IonTitle>About podStation</IonTitle>
 			</IonToolbar>
 		</IonHeader>
 
