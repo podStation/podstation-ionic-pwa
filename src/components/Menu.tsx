@@ -12,7 +12,7 @@ import {
 
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { searchOutline, searchSharp, homeOutline, homeSharp, gitBranchOutline, logoRss} from 'ionicons/icons';
+import { searchOutline, searchSharp, homeOutline, homeSharp, gitBranchOutline, logoRss, helpCircleSharp, helpCircleOutline, cashOutline, cashSharp } from 'ionicons/icons';
 import './Menu.css';
 
 interface AppPage {
@@ -41,13 +41,18 @@ const appPages: AppPage[] = [
 		iosIcon: logoRss,
 		mdIcon: logoRss
 	},
-	/*{
-		title: 'Source Code',
-		url: 'https://github.com/podStation/podstation-ionic-pwa',
-		iosIcon: gitBranchOutline,
-		mdIcon: gitBranchOutline
+	{
+		title: 'Fund it',
+		url: '/page/FundIt',
+		iosIcon: cashOutline,
+		mdIcon: cashSharp
 	},
-	*/
+	{
+		title: 'About',
+		url: '/page/About',
+		iosIcon: helpCircleOutline,
+		mdIcon: helpCircleSharp
+	},
 ];
 
 const Menu: React.FC = () => {
