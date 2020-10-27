@@ -49,6 +49,8 @@ export class PodcastPlayerSingleton implements PodcastPlayer {
 		this._episode = episode;
 		this.audio.src = episode.enclosure?.url;
 		this.audio.play();
+
+		this.setMediaSessionMetadata();
 	}
 
 	pause() {
@@ -61,6 +63,21 @@ export class PodcastPlayerSingleton implements PodcastPlayer {
 
 	setCurrentTime(currentTime: number): void {
 		this.audio && (this.audio.currentTime = currentTime);
+	}
+
+	setMediaSessionMetadata() {
+		let navigator: any = window.navigator;
+		if(this._episode && 'mediaSession' in window.navigator) {
+			// @ts-ignore
+			navigator.mediaSession.metadata = new MediaMetadata({
+				title: this._episode.title,
+				// TODO: add podcast data to the player
+				// artist: this._episode.,
+				artwork: [
+					{ src: this._episode.imageUrl, sizes: '512x512'},
+				]
+			});
+		}
 	}
 
 	get episode() {
