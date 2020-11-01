@@ -4,12 +4,12 @@ import PodcastSearcher, {PodcastSearchResult, PodcastSearchResultItem} from '../
 import SubscriptionHandler, { SubscriptionHandlerImplementation, Subscription} from '../lib/SubscriptionHandler';
 import PageWithFooter from './PageWithFooter';
 
-class PodcastSearchResultItemWithSubscription extends PodcastSearchResultItem {
-	subscribed: boolean = false;
+type PodcastSearchResultItemWithSubscription = PodcastSearchResultItem & {
+	subscribed: boolean;
 }
 
-class PodcastSearchResultWithSubscription {
-	items: PodcastSearchResultItemWithSubscription[] = [];
+type PodcastSearchResultWithSubscription = {
+	items: PodcastSearchResultItemWithSubscription[];
 }
 
 type AddPodcastPageState = {
@@ -24,6 +24,12 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 		super(props);
 
 		this.subscriptionHandler = new SubscriptionHandlerImplementation();
+		this.state = {
+			podcastSearchResult: {
+				items: [],
+			},
+			searchText: ''
+		}
 	}
 	
 	handleSearchSubmit(e: FormEvent) {
@@ -31,7 +37,7 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 		let ps: PodcastSearcher = new PodcastSearcher();
 
 		this.setState({
-			podcastSearchResult: new PodcastSearchResultWithSubscription()
+			podcastSearchResult: {items: []}
 		});
 
 		ps.search(this.state.searchText, (result) => {
@@ -55,12 +61,6 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 				}
 			})
 		}
-	}
-
-	componentWillMount() {
-		this.setState({
-			podcastSearchResult: new PodcastSearchResultWithSubscription()
-		});
 	}
 
 	handleClickSubscribe(e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>, item: PodcastSearchResultItem): void {
@@ -118,7 +118,7 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 					{this.state.podcastSearchResult.items.map((podcast) => (
 						<IonItem>
 							<IonThumbnail slot="start">
-								<IonImg src={podcast.imageUrl || podcast.originalImageUrl}/>
+								<IonImg src={podcast.imageUrl}/>
 							</IonThumbnail>
 							<IonLabel>
 								<h2>{podcast.title}</h2>

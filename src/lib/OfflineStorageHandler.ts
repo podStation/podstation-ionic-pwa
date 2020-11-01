@@ -26,10 +26,8 @@ export type Podcast = {
 	description?: string,
 	imageUrl?: string,
 	subscribed: boolean,
-	externalIds?: [{
-		type: string,
-		id: string
-	}],
+	podcastIndexOrgId?: number,
+	podcastIndexOrgLastEpisodeFetch?: Date,
 }
 
 export type Episode = {
@@ -48,10 +46,7 @@ export type Episode = {
 	},
 	duration?: number,
 	guid?: string,
-	externalIds?:[{
-		type: string,
-		id: string
-	}]
+	podcastIndexOrgId: number
 }
 
 class Database extends Dexie {
@@ -76,7 +71,7 @@ export default interface OfflineStorageHandler {
 	updatePodcast(podcast: RequireOnlyId<Podcast>): Promise<void>;
 	getPodcasts(): Promise<Array<Podcast>>;
 	getPodcast(feedUrl: string): Promise<RequireId<Podcast> | undefined>;
-	storeEpisodes(episodes: OmitId<Episode>[]): Promise<void>;
+	putEpisodes(episodes: Episode[]): Promise<void>;
 	getEpisodes(podcastId: number): Promise<RequireId<Episode>[]>
 }
 
@@ -101,11 +96,11 @@ export class OfflineStorageHandlerImplementation implements OfflineStorageHandle
 		return result ? result as RequireId<Podcast> : undefined;
 	}
 
-	async storeEpisodes(episodes: Episode[]) {
-		return this.db.episodes.bulkAdd(episodes);
+	async putEpisodes(episodes: Episode[]) {
+		return this.db.episodes.bulkPut(episodes);
 	}
 
 	async getEpisodes(podcastId: number): Promise<RequireId<Episode>[]> {
-		return (await this.db.episodes.where('podcastId').equals(podcastId).toArray()) as RequireId<Episode>[];
+		return (await this.db.episodes.where('podcastId').equals(podcastId).reverse().sortBy('pubDate')) as RequireId<Episode>[];
 	}
 }

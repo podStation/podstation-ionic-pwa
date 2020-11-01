@@ -1,5 +1,5 @@
 import OfflineStorageHandler, { OfflineStorageHandlerImplementation, Podcast, Episode } from './OfflineStorageHandler';
-import PodcastindexOrgClient, { PodcastIndexOrgClientImplementation } from './PodcastindexOrgClient';
+import PodcastindexOrgClient, { PodcastIndexOrgClientImplementation, Episode as PodcastIndexOrgEpisode } from './PodcastindexOrgClient';
 
 export type PodcastView = Podcast;
 
@@ -9,10 +9,7 @@ type PodcastToAdd = {
 	description?: string,
 	imageUrl?: string,
 	subscribed: boolean
-	externalIds?: [{
-		type: 'itunes' | 'podcastindexorg',
-		id: string
-	}]
+	podcastIndexOrgId?: number
 }
 
 export type EpisodeView = Episode;
@@ -21,6 +18,7 @@ export default interface PodcastsController {
 	addPodcast(podcast: PodcastToAdd): Promise<void>;
 	getPodcasts(): Promise<Array<PodcastView>>;
 	getPodcast(feedUrl: string): Promise<PodcastView | undefined>;
+	updatePodcasts(): Promise<void>;
 	getEpisodes(feedUrl: string): Promise<EpisodeView[]>;
 }
 
@@ -36,31 +34,35 @@ export class PodcastsControllerImplementation implements PodcastsController {
 
 		let episodes = await this.podcastIndexOrgClient.getEpisodes(podcast.feedUrl);
 
-		await this.offlineStorageHandler.storeEpisodes(episodes.map((episode) => {
+		await this.offlineStorageHandler.putEpisodes(episodes.map((episode) => {
 			return {
+				...this.mapPodcastIndexOrgEpisodeToStorage(episode),
 				podcastId: podcastId,
-				title: episode.title,
-				link: episode.link,
-				description: episode.description,
-				pubDate: new Date(episode.pubDate),
-				imageUrl: episode.imageUrl,
-				enclosure: episode.enclosure && {
-					url: episode.enclosure.url,
-					length: episode.enclosure.length,
-					type: episode.enclosure.type
-				},
-				externalIds: [{
-					type: 'podcastindexorg',
-					id: episode.id.toString()
-				}],
-				guid: episode.guid,
 			};
 		}));
 
 		await this.offlineStorageHandler.updatePodcast({
 			id: podcastId,
 			status: 'processed',
+			podcastIndexOrgLastEpisodeFetch: new Date()
 		});
+	}
+
+	private mapPodcastIndexOrgEpisodeToStorage(podcastIndexOrgEpisode: PodcastIndexOrgEpisode): Omit<Episode, 'podcastId'> {
+		return {
+			title: podcastIndexOrgEpisode.title,
+			link: podcastIndexOrgEpisode.link,
+			description: podcastIndexOrgEpisode.description,
+			pubDate: new Date(podcastIndexOrgEpisode.pubDate),
+			imageUrl: podcastIndexOrgEpisode.imageUrl,
+			enclosure: podcastIndexOrgEpisode.enclosure && {
+				url: podcastIndexOrgEpisode.enclosure.url,
+				length: podcastIndexOrgEpisode.enclosure.length,
+				type: podcastIndexOrgEpisode.enclosure.type
+			},
+			guid: podcastIndexOrgEpisode.guid,
+			podcastIndexOrgId: podcastIndexOrgEpisode.id,
+		};
 	}
 
 	async getPodcasts(): Promise<Array<PodcastView>> {
@@ -75,6 +77,37 @@ export class PodcastsControllerImplementation implements PodcastsController {
 
 	async getPodcast(feedUrl: string): Promise<PodcastView | undefined> {
 		return this.offlineStorageHandler.getPodcast(feedUrl);
+	}
+
+	async updatePodcasts(): Promise<void> {
+		let podcasts = await this.offlineStorageHandler.getPodcasts();
+
+		for(let key in podcasts) {
+			let podcast = podcasts[key];
+			let episodes = await this.podcastIndexOrgClient.getEpisodes(podcast.feedUrl);
+			let storedEpisodes = await this.getEpisodes(podcast.feedUrl);
+
+			episodes.forEach((episode) => {
+				let matchIndex = storedEpisodes.findIndex((storedEpisode) => {
+					return storedEpisode.podcastIndexOrgId === episode.id;
+				});
+
+				if(matchIndex >= 0) {
+					storedEpisodes[matchIndex] = {
+						...storedEpisodes[matchIndex],
+						...this.mapPodcastIndexOrgEpisodeToStorage(episode),
+					}
+				}
+				else {
+					storedEpisodes.push({
+						...this.mapPodcastIndexOrgEpisodeToStorage(episode),
+						podcastId: podcast.id as number
+					})
+				}
+			});
+
+			this.offlineStorageHandler.putEpisodes(storedEpisodes);
+		}
 	}
 
 	async getEpisodes(feedUrl: string): Promise<EpisodeView[]> {

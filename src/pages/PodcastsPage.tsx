@@ -1,4 +1,5 @@
-import { IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonImg, IonItem, IonLabel, IonList, IonMenuButton, IonPage, IonRange, IonThumbnail, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonImg, IonItem, IonLabel, IonList, IonMenuButton, IonRefresher, IonRefresherContent, IonThumbnail, IonTitle, IonToolbar } from '@ionic/react';
+import { RefresherEventDetail } from '@ionic/core';
 import React from 'react';
 import PodcastsController, {PodcastsControllerImplementation, PodcastView} from '../lib/PodcastsController';
 import PageWithFooter from './PageWithFooter';
@@ -20,6 +21,11 @@ export default class PodcastsPage extends React.Component<{}, PodcastsPageState>
 		});
 	}
 
+	async doRefresh(e: CustomEvent<RefresherEventDetail>) {
+		await this.podcastsController.updatePodcasts();
+		e.detail.complete();
+	}
+
 	render() {
 		return (
 			<PageWithFooter>
@@ -33,6 +39,9 @@ export default class PodcastsPage extends React.Component<{}, PodcastsPageState>
 				</IonHeader>
 	
 				<IonContent fullscreen>
+					<IonRefresher slot="fixed" onIonRefresh={(e) => this.doRefresh(e)}>
+						<IonRefresherContent pullingText="Pull to refresh"></IonRefresherContent>
+					</IonRefresher>
 					<IonList>
 						{this.state.podcasts.map((podcast) => (
 							<IonItem routerLink={`/page/Podcast/feed/${btoa(podcast.feedUrl)}`}>

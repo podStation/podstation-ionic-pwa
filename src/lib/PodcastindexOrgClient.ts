@@ -29,11 +29,12 @@ export class PodcastIndexOrgClientImplementation implements PodcastindexOrgClien
 		let jsonResponse = await response.json();
 
 		return jsonResponse.items.map((item: any) => {
-			return {
+			let episode: Episode = {
 				id: item.id,
 				title: item.title,
 				link: item.link,
 				description: item.description,
+				pubDate: item.datePublished,
 				enclosure: {
 					url: item.enclosureUrl,
 					length: item.enclosureLength,
@@ -41,7 +42,9 @@ export class PodcastIndexOrgClientImplementation implements PodcastindexOrgClien
 				},
 				guid: item.guid,
 				imageUrl: item.image
-			} as Episode
+			}
+
+			return episode;
 		})
 	}
 

@@ -23,14 +23,15 @@ export default class PodcastSearcher {
 
 		let jsonResponse = await response.json();
 
-		return jsonResponse.feeds.map((feed: any) => 
-			<PodcastSearchResultItem> {
+		return jsonResponse.feeds.map((feed: any) => {
+			return {
 				feedUrl: feed.url,
 				title: feed.title,
 				imageUrl: feed.image,
-				description: feed.description
+				description: feed.description,
+				podcastIndexOrgId: feed.id
 			}
-		);
+		});
 	}
 
 	static async hashPodcastindexOrgAuthorization(plainTextAuthorization: string): Promise<string> {
@@ -43,14 +44,14 @@ export default class PodcastSearcher {
 	}
 }
 
-export class PodcastSearchResult {
-	items: PodcastSearchResultItem[] = [];
+export type PodcastSearchResult = {
+	items: PodcastSearchResultItem[];
 }
 
-export class PodcastSearchResultItem {
-	feedUrl: string = '';
-	title: string = '';
-	description: string = '';
-	imageUrl: string = '';
-	originalImageUrl: string = '';
+export type PodcastSearchResultItem = {
+	feedUrl: string;
+	title: string;
+	description: string;
+	imageUrl: string;
+	podcastIndexOrgId?: number,
 }
