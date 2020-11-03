@@ -38,7 +38,7 @@ export default class FooterPlayer extends React.Component<{}, PodcastPlayerState
 		// 2. updates in state seem to trigger the change event
 		// we want to avoid setting the current time in this cases, as it
 		// causes stutter in the audio
-		if(e.detail.value !== NaN && e.detail.value !== this.state.currentTime) {
+		if(typeof e.detail.value === 'number' && isNaN(e.detail.value) && e.detail.value !== this.state.currentTime) {
 			this.podcastPlayer.setCurrentTime(e.detail.value as number);
 			this.setState(this.podcastPlayer.getPlayerState());
 		}

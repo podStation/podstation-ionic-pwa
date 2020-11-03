@@ -1,3 +1,4 @@
+import { wait } from '@testing-library/react';
 import Dexie from 'dexie';
 
 // https://medium.com/@KevinBGreene/typescript-modeling-required-fields-with-mapped-types-f7bf17688786
@@ -31,6 +32,7 @@ export type Podcast = {
 }
 
 export type Episode = {
+	// >>> feed and index data
 	id?: number,
 	podcastId: number, 
 	title?: string,
@@ -47,6 +49,15 @@ export type Episode = {
 	duration?: number,
 	guid?: string,
 	podcastIndexOrgId: number
+	// <<< feed and index data
+	// >>> user data
+	/**
+	 * Last known listened position in seconds
+	 */
+	position?: number,
+	lastTimeListened?: Date,
+	finished?: boolean
+	// <<< user data
 }
 
 class Database extends Dexie {
@@ -58,7 +69,7 @@ class Database extends Dexie {
  
 		this.version(1).stores({
 			podcasts: '++id, &feedUrl, *alternateFeedUrls, lastItemPubDate, firstItemPubDate',
-			episodes: '++id, podcastId, *link, *categories, *pubDate, *enclosure.url, *guid',
+			episodes: '++id, podcastId, link, *categories, pubDate, enclosure.url, guid, position',
 		});
 
 		this.podcasts = this.table('podcasts');
@@ -72,7 +83,9 @@ export default interface OfflineStorageHandler {
 	getPodcasts(): Promise<Array<Podcast>>;
 	getPodcast(feedUrl: string): Promise<RequireId<Podcast> | undefined>;
 	putEpisodes(episodes: Episode[]): Promise<void>;
+	updateEpisode(episode: RequireOnlyId<Episode>): Promise<void>;
 	getEpisodes(podcastId: number): Promise<RequireId<Episode>[]>
+	getEpisodesInProgress(): Promise<RequireId<Episode>[]>;
 }
 
 export class OfflineStorageHandlerImplementation implements OfflineStorageHandler {
@@ -100,7 +113,15 @@ export class OfflineStorageHandlerImplementation implements OfflineStorageHandle
 		return this.db.episodes.bulkPut(episodes);
 	}
 
+	async updateEpisode(episode: RequireOnlyId<Episode>): Promise<void> {
+		await this.db.episodes.update(episode.id, episode);
+	}
+
 	async getEpisodes(podcastId: number): Promise<RequireId<Episode>[]> {
 		return (await this.db.episodes.where('podcastId').equals(podcastId).reverse().sortBy('pubDate')) as RequireId<Episode>[];
+	}
+
+	async getEpisodesInProgress(): Promise<RequireId<Episode>[]> {
+		return (await this.db.episodes.where('position').aboveOrEqual(0).reverse().sortBy('lastTimeListened')) as RequireId<Episode>[];
 	}
 }

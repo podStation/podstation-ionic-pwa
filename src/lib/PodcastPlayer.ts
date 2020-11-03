@@ -1,5 +1,5 @@
 import { RangeValue } from '@ionic/core';
-import { EpisodeView } from './PodcastsController'
+import PodcastController, { PodcastsControllerImplementation, EpisodeView } from './PodcastsController'
 
 export type PodcastPlayerState = {
 	hasMedia: boolean,
@@ -23,6 +23,7 @@ export interface PodcastPlayerObserver {
 }
 
 export class PodcastPlayerSingleton implements PodcastPlayer {
+	private podcastController: PodcastController = new PodcastsControllerImplementation();
 	private static instance: PodcastPlayerSingleton;
 	private audio: HTMLAudioElement | undefined;
 	private _episode?: EpisodeView;
@@ -48,6 +49,7 @@ export class PodcastPlayerSingleton implements PodcastPlayer {
 		
 		this._episode = episode;
 		this.audio.src = episode.enclosure?.url;
+		this.audio.currentTime = episode.position || 0;
 		this.audio.play();
 
 		this.setMediaSessionMetadata();
@@ -98,3 +100,15 @@ export class PodcastPlayerSingleton implements PodcastPlayer {
 		return this.instance || (this.instance = new PodcastPlayerSingleton())
 	}
 }
+
+setInterval(() => {
+	// To be changed later
+	// it should react to state changes on the player
+	let podcastController: PodcastController = new PodcastsControllerImplementation();
+	let podcastPlayer: PodcastPlayer = PodcastPlayerSingleton.getInstance();
+	let playerState = podcastPlayer.getPlayerState();
+	
+	if(playerState.isPlaying) {
+		podcastController.updateEpisodeCurrentTime(playerState.episode?.id as number, playerState.currentTime as number);
+	}
+}, 5000);

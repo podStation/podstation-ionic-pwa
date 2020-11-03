@@ -13,6 +13,9 @@ type PodcastToAdd = {
 }
 
 export type EpisodeView = Episode;
+export type EpisodeWithPodcastView = Episode & {
+	podcast: PodcastView
+}
 
 export default interface PodcastsController {
 	addPodcast(podcast: PodcastToAdd): Promise<void>;
@@ -20,6 +23,8 @@ export default interface PodcastsController {
 	getPodcast(feedUrl: string): Promise<PodcastView | undefined>;
 	updatePodcasts(): Promise<void>;
 	getEpisodes(feedUrl: string): Promise<EpisodeView[]>;
+	getEpisodesInProgress(): Promise<EpisodeWithPodcastView[]>;
+	updateEpisodeCurrentTime(episodeId: number, currentTime: number): void;
 }
 
 export class PodcastsControllerImplementation implements PodcastsController {
@@ -114,5 +119,27 @@ export class PodcastsControllerImplementation implements PodcastsController {
 		let podcast = await this.offlineStorageHandler.getPodcast(feedUrl);
 
 		return podcast ? this.offlineStorageHandler.getEpisodes(podcast.id) : [];
+	}
+
+	async getEpisodesInProgress(): Promise<EpisodeWithPodcastView[]> {
+		let podcasts = await this.offlineStorageHandler.getPodcasts();
+		let episodesInProgress = await this.offlineStorageHandler.getEpisodesInProgress();
+
+		return episodesInProgress.map((eip) => {
+			let podcast = podcasts.find((p) => p.id === eip.podcastId);
+
+			return {
+				...eip,
+				podcast: podcast as Podcast
+			}
+		});
+	}
+
+	updateEpisodeCurrentTime(episodeId: number, position: number) {
+		this.offlineStorageHandler.updateEpisode({
+			id: episodeId,
+			position: position,
+			lastTimeListened: new Date()
+		});
 	}
 }
