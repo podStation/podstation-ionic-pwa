@@ -29,6 +29,7 @@ import PodcastPage from './pages/PodcastPage';
 import About from './pages/About';
 import FundIt from './pages/FundIt';
 import InProgressPage from './pages/InProgress';
+import SettingsPage from './pages/Settings';
 
 const App: React.FC = () => {
 	return (
@@ -45,6 +46,7 @@ const App: React.FC = () => {
 						<Route path="/page/InProgress" component={InProgressPage} exact />
 						<Route path="/page/About" component={About} exact />
 						<Route path="/page/FundIt" component={FundIt} exact />
+						<Route path="/page/Settings" component={SettingsPage} exact />
 						<Redirect from="/" to="/page/Home" exact />
 					</Switch>
 				</IonContent>

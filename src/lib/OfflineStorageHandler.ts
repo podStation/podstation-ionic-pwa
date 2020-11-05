@@ -86,6 +86,7 @@ export default interface OfflineStorageHandler {
 	updateEpisode(episode: RequireOnlyId<Episode>): Promise<void>;
 	getEpisodes(podcastId: number): Promise<RequireId<Episode>[]>
 	getEpisodesInProgress(): Promise<RequireId<Episode>[]>;
+	deleteDatabase(): Promise<void>;
 }
 
 export class OfflineStorageHandlerImplementation implements OfflineStorageHandler {
@@ -123,5 +124,12 @@ export class OfflineStorageHandlerImplementation implements OfflineStorageHandle
 
 	async getEpisodesInProgress(): Promise<RequireId<Episode>[]> {
 		return (await this.db.episodes.where('position').aboveOrEqual(0).reverse().sortBy('lastTimeListened')) as RequireId<Episode>[];
+		this.db.delete()
+	}
+
+	async deleteDatabase(): Promise<void> {
+		await this.db.delete();
+
+		this.db = new Database();
 	}
 }

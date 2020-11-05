@@ -12,7 +12,7 @@ import {
 
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { searchOutline, searchSharp, homeOutline, homeSharp, gitBranchOutline, logoRss, helpCircleSharp, helpCircleOutline, cashOutline, cashSharp, playSharp, playOutline } from 'ionicons/icons';
+import { searchOutline, searchSharp, homeOutline, homeSharp, gitBranchOutline, logoRss, helpCircleSharp, helpCircleOutline, cashOutline, cashSharp, playSharp, playOutline, settingsOutline, settingsSharp } from 'ionicons/icons';
 import './Menu.css';
 
 interface AppPage {
@@ -52,6 +52,12 @@ const appPages: AppPage[] = [
 		url: '/page/FundIt',
 		iosIcon: cashOutline,
 		mdIcon: cashSharp
+	},
+	{
+		title: 'Settings',
+		url: '/page/Settings',
+		iosIcon: settingsOutline,
+		mdIcon: settingsSharp
 	},
 	{
 		title: 'About',
