@@ -25,6 +25,10 @@ export type Podcast = {
 	firstItemPubDate?: Date,
 	title?: string,
 	description?: string,
+	/**
+	 * Podcast website
+	 */
+	link?: string,
 	imageUrl?: string,
 	subscribed: boolean,
 	podcastIndexOrgId?: number,

@@ -14,6 +14,7 @@ export type Subscription = {
 
 export default interface SubscriptionHandler {
 	subscribe(podcast: Podcast): Promise<void>;
+	subscribeToMany(podcasts: Podcast[]): Promise<void[]>;
 
 	getSubscriptions(): Promise<Array<Subscription>>;
 }
@@ -26,6 +27,13 @@ export class SubscriptionHandlerImplementation implements SubscriptionHandler{
 			...podcast,
 			subscribed: true
 		});
+	}
+
+	async subscribeToMany(podcasts: Podcast[]): Promise<void[]> {
+		return this.podcastsController.addPodcasts(podcasts.map((podcast) => ({
+			...podcast,
+			subscribed: true
+		})))
 	}
 
 	async getSubscriptions(): Promise<Array<Subscription>> {

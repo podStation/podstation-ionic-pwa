@@ -1,3 +1,11 @@
+export type Podcast = {
+	id: number,
+	title: string,
+	description: string,
+	link: string,
+	imageUrl: string,
+}
+
 export type Episode = {
 	id: number,
 	title: string,
@@ -14,12 +22,29 @@ export type Episode = {
 }
 
 export default interface PodcastindexOrgClient {
+	getPodcastByFeedUrl(feedUrl: string): Promise<Podcast>
 	getEpisodes(feedUrl: string): Promise<Array<Episode>> 
 }
 
 export class PodcastIndexOrgClientImplementation implements PodcastindexOrgClient{
 	private static readonly AUTH_KEY = 'NUKSUA3RXTJ8AEQPHCNP';
 	private static readonly AUTH_SECRET = 'BufqJNuREeuP2ThUMUq55z2A3peQt#bsw$Zdsvc3';
+
+	async getPodcastByFeedUrl(feedUrl: string): Promise<Podcast> {
+		const response = await fetch(`https://api.podcastindex.org/api/1.0/podcasts/byfeedurl?url=${feedUrl}`, {
+			headers: await PodcastIndexOrgClientImplementation.buildHeaders()
+		});
+
+		const jsonResponse = await response.json();
+
+		return {
+			id: jsonResponse.feed.id,
+			title: jsonResponse.feed.title,
+			description: jsonResponse.feed.title,
+			link: jsonResponse.feed.link,
+			imageUrl: jsonResponse.feed.image,
+		}
+	}
 
 	async getEpisodes(feedUrl: string): Promise<Array<Episode>> {
 		let response = await fetch(`https://api.podcastindex.org/api/1.0/episodes/byfeedurl?max=10000&url=${feedUrl}`, {

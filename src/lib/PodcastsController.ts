@@ -19,6 +19,7 @@ export type EpisodeWithPodcastView = Episode & {
 
 export default interface PodcastsController {
 	addPodcast(podcast: PodcastToAdd): Promise<void>;
+	addPodcasts(podcasts: PodcastToAdd[]): Promise<void[]>;
 	getPodcasts(): Promise<Array<PodcastView>>;
 	getPodcast(feedUrl: string): Promise<PodcastView | undefined>;
 	updatePodcasts(): Promise<void>;
@@ -37,6 +38,19 @@ export class PodcastsControllerImplementation implements PodcastsController {
 			status: 'new'
 		});
 
+		if(!podcast.podcastIndexOrgId) {
+			const podcastAtPodcastindexOrg = await this.podcastIndexOrgClient.getPodcastByFeedUrl(podcast.feedUrl);
+
+			await this.offlineStorageHandler.updatePodcast({
+				id: podcastId,
+				title: podcastAtPodcastindexOrg.title,
+				description: podcastAtPodcastindexOrg.description,
+				link: podcastAtPodcastindexOrg.link,
+				imageUrl: podcastAtPodcastindexOrg.imageUrl,
+				podcastIndexOrgId: podcastAtPodcastindexOrg.id,
+			});
+		}
+
 		let episodes = await this.podcastIndexOrgClient.getEpisodes(podcast.feedUrl);
 
 		await this.offlineStorageHandler.putEpisodes(episodes.map((episode) => {
@@ -51,6 +65,10 @@ export class PodcastsControllerImplementation implements PodcastsController {
 			status: 'processed',
 			podcastIndexOrgLastEpisodeFetch: new Date()
 		});
+	}
+
+	async addPodcasts(podcasts: PodcastToAdd[]): Promise<void[]> {
+		return Promise.all(podcasts.map((podcast) => this.addPodcast(podcast)));
 	}
 
 	private mapPodcastIndexOrgEpisodeToStorage(podcastIndexOrgEpisode: PodcastIndexOrgEpisode): Omit<Episode, 'podcastId'> {

@@ -3,6 +3,7 @@ import React, { FormEvent, useState } from 'react';
 import PodcastSearcher, {PodcastSearchResult, PodcastSearchResultItem} from '../lib/PodcastSearcher';
 import SubscriptionHandler, { SubscriptionHandlerImplementation, Subscription} from '../lib/SubscriptionHandler';
 import PageWithFooter from './PageWithFooter';
+import parseOpml from '../lib/OpmlParser'
 
 type PodcastSearchResultItemWithSubscription = PodcastSearchResultItem & {
 	subscribed: boolean;
@@ -92,6 +93,27 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 		});
 	}
 
+	handleClickImportOpml(): void {
+		document.getElementById('opmlUploader')?.click();
+	}
+
+	handleChangeOpmlUploader(e: React.ChangeEvent<HTMLInputElement>): void {
+		const files = e.currentTarget.files;
+		const file = files && files[0];
+
+		if(file) {
+			const reader = new FileReader();
+
+			reader.onload = (e) => {
+				// @ts-ignore
+				const fileContent = e.currentTarget.result;
+				this.subscriptionHandler.subscribeToMany(parseOpml(fileContent));
+			}
+
+			reader.readAsText(file);
+		}
+	}
+
 	render() {
 		return (
 			<PageWithFooter>
@@ -114,6 +136,12 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 				<form onSubmit={e => this.handleSearchSubmit(e)}>
 					<IonSearchbar value={this.state.searchText} debounce={0} onIonChange={e => this.setSearchText(e.detail.value!)}/>
 				</form>
+				<IonToolbar>
+					<IonButtons>
+						<IonButton onClick={(e) => this.handleClickImportOpml()}>Import OPML file</IonButton>
+					</IonButtons>
+				</IonToolbar>
+				<input id="opmlUploader" type="file" style={{display: "none"}} accept=".opml, .xml" onChange={(e) => this.handleChangeOpmlUploader(e)}></input>
 				<IonList>
 					{this.state.podcastSearchResult.items.map((podcast) => (
 						<IonItem>
