@@ -25,11 +25,12 @@ export default class PodcastPage extends React.Component<PodcastPageProps, Podca
 	}
 	
 	async componentDidMount() {
+		const feedUrl = atob(decodeURIComponent(this.props.match.params.encodedFeedUrl));
 		this.setState({
-			podcast: await this.podcastsController.getPodcast(atob(this.props.match.params.encodedFeedUrl))
+			podcast: await this.podcastsController.getPodcast(feedUrl)
 		});
 
-		this.allEpisodes = await this.podcastsController.getEpisodes(atob(this.props.match.params.encodedFeedUrl))
+		this.allEpisodes = await this.podcastsController.getEpisodes(feedUrl);
 
 		this.setState({
 			episodes: this.allEpisodes.slice(0, this.lastItemToRender + 1)

@@ -44,7 +44,7 @@ export default class PodcastsPage extends React.Component<{}, PodcastsPageState>
 					</IonRefresher>
 					<IonList>
 						{this.state.podcasts.map((podcast) => (
-							<IonItem routerLink={`/page/Podcast/feed/${btoa(podcast.feedUrl)}`}>
+							<IonItem routerLink={`/page/Podcast/feed/${encodeURIComponent(btoa(podcast.feedUrl))}`}>
 								<IonThumbnail slot="start">
 									{podcast.imageUrl && <IonImg src={podcast.imageUrl}/>}
 								</IonThumbnail>
