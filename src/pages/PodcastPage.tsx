@@ -4,6 +4,7 @@ import PodcastsController, {PodcastsControllerImplementation, PodcastView, Episo
 import { RouteComponentProps } from "react-router-dom";
 import { PodcastPlayerSingleton } from '../lib/PodcastPlayer'
 import PageWithFooter from './PageWithFooter';
+import EpisodeItem from '../components/EpisodeItem';
 
 interface PodcastPageProps extends RouteComponentProps<{
 	encodedFeedUrl: string;
@@ -37,12 +38,6 @@ export default class PodcastPage extends React.Component<PodcastPageProps, Podca
 		});
 	}
 
-	handleClickPlay(e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>, episode: EpisodeView): void {
-		const podcastPlayer = PodcastPlayerSingleton.getInstance();
-
-		podcastPlayer.play(episode);
-	}
-
 	handleInfiniteScroll(e: CustomEvent<void>) {
 		this.lastItemToRender += 20;
 
@@ -72,13 +67,7 @@ export default class PodcastPage extends React.Component<PodcastPageProps, Podca
 				<IonContent fullscreen>
 					<IonList>
 						{this.state.episodes && this.state.episodes.map((episode) => (
-							<IonItem>
-								<IonLabel>
-									<h2>{episode.title}</h2>
-									<p>{episode.description}</p>
-								</IonLabel>
-								<IonButton slot="end" onClick={e => this.handleClickPlay(e, episode)}>Play</IonButton>
-							</IonItem>
+							<EpisodeItem episode={episode}/>
 						))}
 					</IonList>
 					<IonInfiniteScroll onIonInfinite={e => this.handleInfiniteScroll(e)}>

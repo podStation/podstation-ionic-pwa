@@ -5,6 +5,7 @@ import { PodcastPlayerSingleton } from '../lib/PodcastPlayer'
 import PageWithFooter from './PageWithFooter';
 import { playOutline, playSharp } from 'ionicons/icons';
 import { EOPNOTSUPP } from 'constants';
+import EpisodeItem from '../components/EpisodeItem';
 
 type InProgressPageState = {
 	episodes?: EpisodeWithPodcastView[]
@@ -26,12 +27,6 @@ export default class InProgressPage extends React.Component<{}, InProgressPageSt
 		this.setState({
 			episodes: this.allEpisodes.slice(0, this.lastItemToRender + 1)
 		});
-	}
-
-	handleClickPlay(e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>, episode: EpisodeView): void {
-		const podcastPlayer = PodcastPlayerSingleton.getInstance();
-
-		podcastPlayer.play(episode);
 	}
 
 	handleInfiniteScroll(e: CustomEvent<void>) {
@@ -60,17 +55,7 @@ export default class InProgressPage extends React.Component<{}, InProgressPageSt
 				<IonContent fullscreen>
 					<IonList>
 						{this.state.episodes && this.state.episodes.map((episode) => (
-							<IonItem>
-								<IonThumbnail slot="start">
-									{episode.podcast.imageUrl && <IonImg src={episode.podcast.imageUrl}/>}
-								</IonThumbnail>
-								<IonLabel>
-									<h2>{episode.title}</h2>
-									<h3>{episode.podcast.title}</h3>
-									<p>{episode.description}</p>
-								</IonLabel>
-								<IonButton slot="end" onClick={e => this.handleClickPlay(e, episode)}>Play</IonButton>
-							</IonItem>
+							<EpisodeItem episode={episode} podcast={episode.podcast} showThumbnail={true}/>
 						))}
 					</IonList>
 					<IonInfiniteScroll onIonInfinite={e => this.handleInfiniteScroll(e)}>
