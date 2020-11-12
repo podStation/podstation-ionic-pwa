@@ -9,7 +9,7 @@ type RequireOnly<T, K extends keyof T> = {
 }
 
 type RequireOnlyId<T extends {id?: number}> = RequireOnly<T, 'id'>;
-type RequireId<T extends {id?: number}> = Omit<T, 'id'> & {id: number};
+export type RequireId<T extends {id?: number}> = Omit<T, 'id'> & {id: number};
 type OmitId<T extends {id?: number}> = Omit<T, 'id'>;
 
 export type Podcast = {
@@ -84,11 +84,12 @@ class Database extends Dexie {
 export default interface OfflineStorageHandler {
 	addPodcast(podcast: OmitId<Podcast>): Promise<number>;
 	updatePodcast(podcast: RequireOnlyId<Podcast>): Promise<void>;
-	getPodcasts(): Promise<Array<Podcast>>;
+	getPodcasts(): Promise<RequireId<Podcast>[]>;
 	getPodcast(feedUrl: string): Promise<RequireId<Podcast> | undefined>;
 	putEpisodes(episodes: Episode[]): Promise<void>;
 	updateEpisode(episode: RequireOnlyId<Episode>): Promise<void>;
 	getEpisodes(podcastId: number): Promise<RequireId<Episode>[]>
+	getAllEpisodes(count: number, asOfPubDate: Date): Promise<RequireId<Episode>[]>;
 	getEpisodesInProgress(): Promise<RequireId<Episode>[]>;
 	deleteDatabase(): Promise<void>;
 }
@@ -104,8 +105,8 @@ export class OfflineStorageHandlerImplementation implements OfflineStorageHandle
 		await this.db.podcasts.update(podcast.id, podcast);
 	}
 
-	async getPodcasts(): Promise<Array<Podcast>> {
-		return this.db.podcasts.toArray();
+	async getPodcasts(): Promise<RequireId<Podcast>[]> {
+		return (await this.db.podcasts.toArray()) as RequireId<Podcast>[];
 	}
 
 	async getPodcast(feedUrl: string): Promise<RequireId<Podcast> | undefined> {
@@ -126,9 +127,12 @@ export class OfflineStorageHandlerImplementation implements OfflineStorageHandle
 		return (await this.db.episodes.where('podcastId').equals(podcastId).reverse().sortBy('pubDate')) as RequireId<Episode>[];
 	}
 
+	async getAllEpisodes(count: number, asOfPubDate: Date): Promise<RequireId<Episode>[]> {
+		return (await this.db.episodes.where('pubDate').belowOrEqual(asOfPubDate).reverse().limit(count).toArray()) as RequireId<Episode>[];
+	}
+
 	async getEpisodesInProgress(): Promise<RequireId<Episode>[]> {
 		return (await this.db.episodes.where('position').aboveOrEqual(0).reverse().sortBy('lastTimeListened')) as RequireId<Episode>[];
-		this.db.delete()
 	}
 
 	async deleteDatabase(): Promise<void> {

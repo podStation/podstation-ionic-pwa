@@ -30,6 +30,7 @@ import About from './pages/About';
 import FundIt from './pages/FundIt';
 import InProgressPage from './pages/InProgress';
 import SettingsPage from './pages/Settings';
+import EpisodesPage from './pages/EpisodesPage';
 
 const App: React.FC = () => {
 	return (
@@ -43,6 +44,7 @@ const App: React.FC = () => {
 						<Route path="/page/Home" component={Home} exact />
 						<Route path="/page/Podcasts" component={PodcastsPage} exact />
 						<Route path="/page/Podcast/feed/:encodedFeedUrl" component={PodcastPage} exact />
+						<Route path="/page/Episodes" component={EpisodesPage} exact />
 						<Route path="/page/InProgress" component={InProgressPage} exact />
 						<Route path="/page/About" component={About} exact />
 						<Route path="/page/FundIt" component={FundIt} exact />

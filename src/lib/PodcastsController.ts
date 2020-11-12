@@ -1,4 +1,4 @@
-import OfflineStorageHandler, { OfflineStorageHandlerImplementation, Podcast, Episode } from './OfflineStorageHandler';
+import OfflineStorageHandler, { OfflineStorageHandlerImplementation, Podcast, Episode, RequireId} from './OfflineStorageHandler';
 import PodcastindexOrgClient, { PodcastIndexOrgClientImplementation, Episode as PodcastIndexOrgEpisode } from './PodcastindexOrgClient';
 
 export type PodcastView = Podcast;
@@ -24,6 +24,7 @@ export default interface PodcastsController {
 	getPodcast(feedUrl: string): Promise<PodcastView | undefined>;
 	updatePodcasts(): Promise<void>;
 	getEpisodes(feedUrl: string): Promise<EpisodeView[]>;
+	getAllEpisodes(count: number, asOfPubDate: Date): Promise<EpisodeWithPodcastView[]>;
 	getEpisodesInProgress(): Promise<EpisodeWithPodcastView[]>;
 	updateEpisodeCurrentTime(episodeId: number, currentTime: number): void;
 }
@@ -139,18 +140,18 @@ export class PodcastsControllerImplementation implements PodcastsController {
 		return podcast ? this.offlineStorageHandler.getEpisodes(podcast.id) : [];
 	}
 
+	async getAllEpisodes(count: number, asOfPubDate: Date): Promise<EpisodeWithPodcastView[]> {
+		let podcasts = await this.offlineStorageHandler.getPodcasts();
+		let episodes = await this.offlineStorageHandler.getAllEpisodes(count, asOfPubDate);
+
+		return PodcastsControllerImplementation.addPodcastToEpisodes(episodes, podcasts);
+	}
+
 	async getEpisodesInProgress(): Promise<EpisodeWithPodcastView[]> {
 		let podcasts = await this.offlineStorageHandler.getPodcasts();
 		let episodesInProgress = await this.offlineStorageHandler.getEpisodesInProgress();
 
-		return episodesInProgress.map((eip) => {
-			let podcast = podcasts.find((p) => p.id === eip.podcastId);
-
-			return {
-				...eip,
-				podcast: podcast as Podcast
-			}
-		});
+		return PodcastsControllerImplementation.addPodcastToEpisodes(episodesInProgress, podcasts);
 	}
 
 	updateEpisodeCurrentTime(episodeId: number, position: number) {
@@ -158,6 +159,17 @@ export class PodcastsControllerImplementation implements PodcastsController {
 			id: episodeId,
 			position: position,
 			lastTimeListened: new Date()
+		});
+	}
+
+	private static addPodcastToEpisodes(episodes: RequireId<Episode>[], podcasts: RequireId<Podcast>[]): EpisodeWithPodcastView[] {
+		return episodes.map((episode) => {
+			let podcast = podcasts.find((p) => p.id === episode.podcastId);
+
+			return {
+				...episode,
+				podcast: podcast as Podcast
+			}
 		});
 	}
 }
