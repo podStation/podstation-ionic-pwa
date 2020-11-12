@@ -108,7 +108,15 @@ export class PodcastsControllerImplementation implements PodcastsController {
 
 		for(let key in podcasts) {
 			let podcast = podcasts[key];
-			let episodes = await this.podcastIndexOrgClient.getEpisodes(podcast.feedUrl);
+			let episodes: PodcastIndexOrgEpisode[];
+
+			try {
+				episodes = await this.podcastIndexOrgClient.getEpisodes(podcast.feedUrl);
+			}
+			catch(e) {
+				continue;
+			}
+
 			let storedEpisodes = await this.getEpisodes(podcast.feedUrl);
 
 			episodes.forEach((episode) => {
