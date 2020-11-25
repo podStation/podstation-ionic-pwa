@@ -5,6 +5,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { PodcastPlayerSingleton } from '../lib/PodcastPlayer'
 import PageWithFooter from './PageWithFooter';
 import EpisodeItem from '../components/EpisodeItem';
+import ImgWithFallBack from '../components/ImgWithFallback';
 
 interface PodcastPageProps extends RouteComponentProps<{
 	encodedFeedUrl: string;
@@ -59,7 +60,7 @@ export default class PodcastPage extends React.Component<PodcastPageProps, Podca
 						<IonMenuButton />
 					</IonButtons>
 					<IonThumbnail slot="start">
-						<IonImg src={this.state.podcast && this.state.podcast.imageUrl}/>
+						<ImgWithFallBack src={this.state.podcast && this.state.podcast.imageUrl}/>
 					</IonThumbnail>
 					<IonTitle>{this.state.podcast && this.state.podcast.title}</IonTitle>
 					</IonToolbar>

@@ -1,7 +1,8 @@
-import { IonButton, IonFooter, IonImg, IonLabel, IonRange, IonThumbnail, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonFooter, IonLabel, IonRange, IonThumbnail, IonTitle, IonToolbar } from '@ionic/react';
 import { RangeChangeEventDetail } from '@ionic/core'
 import React from 'react';
 import PodcastPlayer, {PodcastPlayerState, PodcastPlayerSingleton} from '../lib/PodcastPlayer'
+import ImgWithFallBack from './ImgWithFallback';
 
 export default class FooterPlayer extends React.Component<{}, PodcastPlayerState> {
 	private podcastPlayer: PodcastPlayer = PodcastPlayerSingleton.getInstance();
@@ -57,7 +58,7 @@ export default class FooterPlayer extends React.Component<{}, PodcastPlayerState
 				{this.state.episode &&
 					<IonToolbar>
 						<IonThumbnail slot="start">
-							<IonImg src={this.state.episode.imageUrl}/>
+							<ImgWithFallBack src={this.state.episode.imageUrl}/>
 						</IonThumbnail>
 						<IonTitle>{this.state.episode.title}</IonTitle>
 						<IonRange min={0} max={this.state.duration} value={this.state.currentTime} onIonChange={(e) => this.handleRangeChanged(e)}>

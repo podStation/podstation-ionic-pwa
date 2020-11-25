@@ -3,6 +3,7 @@ import { RefresherEventDetail } from '@ionic/core';
 import React from 'react';
 import PodcastsController, {PodcastsControllerImplementation, PodcastView} from '../lib/PodcastsController';
 import PageWithFooter from './PageWithFooter';
+import ImgWithFallBack from '../components/ImgWithFallback';
 
 class PodcastsPageState {
 	podcasts: Array<PodcastView> = [];
@@ -46,7 +47,7 @@ export default class PodcastsPage extends React.Component<{}, PodcastsPageState>
 						{this.state.podcasts.map((podcast) => (
 							<IonItem routerLink={`/page/Podcast/feed/${encodeURIComponent(btoa(podcast.feedUrl))}`}>
 								<IonThumbnail slot="start">
-									{podcast.imageUrl && <IonImg src={podcast.imageUrl}/>}
+									{podcast.imageUrl && <ImgWithFallBack src={podcast.imageUrl}/>}
 								</IonThumbnail>
 								<IonLabel>
 									<h2>{podcast.title}</h2>

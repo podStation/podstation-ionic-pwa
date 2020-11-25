@@ -1,7 +1,8 @@
-import { IonButton, IonImg, IonItem, IonLabel, IonThumbnail } from '@ionic/react';
+import { IonButton, IonItem, IonLabel, IonThumbnail } from '@ionic/react';
 import React from 'react';
 import { PodcastPlayerSingleton } from '../lib/PodcastPlayer';
 import { EpisodeView, PodcastView } from '../lib/PodcastsController';
+import ImgWithFallBack from './ImgWithFallback';
 
 type EpisodeItemProps = {
 	showThumbnail?: boolean,
@@ -9,8 +10,20 @@ type EpisodeItemProps = {
 	podcast?: PodcastView
 }
 
-export default class EpisodeItem extends React.Component<EpisodeItemProps> {
-	handleClickPlay(e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>): void {
+type EpisodeItemState = {
+	brokenImageLink: boolean
+}
+
+export default class EpisodeItem extends React.Component<EpisodeItemProps, EpisodeItemState> {
+	constructor(props: EpisodeItemProps) {
+		super(props);
+
+		this.state = {
+			brokenImageLink: false
+		}
+	}
+
+	private handleClickPlay(e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>): void {
 		const podcastPlayer = PodcastPlayerSingleton.getInstance();
 
 		podcastPlayer.play(this.props.episode);
@@ -22,7 +35,7 @@ export default class EpisodeItem extends React.Component<EpisodeItemProps> {
 			{
 				this.props.showThumbnail && 
 				<IonThumbnail slot="start">
-					{this.props.podcast?.imageUrl && <IonImg src={this.props.podcast.imageUrl}/>}
+					{(!this.state.brokenImageLink) && this.props.podcast?.imageUrl && <ImgWithFallBack src={this.props.podcast.imageUrl}/>}
 				</IonThumbnail>
 			}
 			<IonLabel>

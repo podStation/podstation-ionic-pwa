@@ -1,9 +1,10 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonSearchbar, IonList, IonItem, IonThumbnail, IonImg, IonLabel, IonButton } from '@ionic/react';
-import React, { FormEvent, useState } from 'react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton,  IonTitle, IonToolbar, IonSearchbar, IonList, IonItem, IonThumbnail, IonLabel, IonButton } from '@ionic/react';
+import React, { FormEvent } from 'react';
 import PodcastSearcher, {PodcastSearchResult, PodcastSearchResultItem} from '../lib/PodcastSearcher';
 import SubscriptionHandler, { SubscriptionHandlerImplementation, Subscription} from '../lib/SubscriptionHandler';
 import PageWithFooter from './PageWithFooter';
 import parseOpml from '../lib/OpmlParser'
+import ImgWithFallBack from '../components/ImgWithFallback';
 
 type PodcastSearchResultItemWithSubscription = PodcastSearchResultItem & {
 	subscribed: boolean;
@@ -146,7 +147,7 @@ export default class AddPodcastPage extends React.Component<{}, AddPodcastPageSt
 					{this.state.podcastSearchResult.items.map((podcast) => (
 						<IonItem>
 							<IonThumbnail slot="start">
-								<IonImg src={podcast.imageUrl}/>
+								<ImgWithFallBack src={podcast.imageUrl}/>
 							</IonThumbnail>
 							<IonLabel>
 								<h2>{podcast.title}</h2>
