@@ -23,6 +23,7 @@ export default interface PodcastsController {
 	deletePodcastById(podcastId: number): Promise<void>;
 	getPodcasts(): Promise<Array<PodcastView>>;
 	getPodcast(feedUrl: string): Promise<PodcastView | undefined>;
+	getPodcastById(id: number): Promise<PodcastView | undefined>;
 	updatePodcasts(): Promise<void>;
 	getEpisodes(feedUrl: string): Promise<EpisodeView[]>;
 	getAllEpisodes(count: number, asOfPubDate: Date): Promise<EpisodeWithPodcastView[]>;
@@ -40,18 +41,17 @@ export class PodcastsControllerImplementation implements PodcastsController {
 			status: 'new'
 		});
 
-		if(!podcast.podcastIndexOrgId) {
-			const podcastAtPodcastindexOrg = await this.podcastIndexOrgClient.getPodcastByFeedUrl(podcast.feedUrl);
+		const podcastAtPodcastindexOrg = await this.podcastIndexOrgClient.getPodcastByFeedUrl(podcast.feedUrl);
 
-			await this.offlineStorageHandler.updatePodcast({
-				id: podcastId,
-				title: podcastAtPodcastindexOrg.title,
-				description: podcastAtPodcastindexOrg.description,
-				link: podcastAtPodcastindexOrg.link,
-				imageUrl: podcastAtPodcastindexOrg.imageUrl,
-				podcastIndexOrgId: podcastAtPodcastindexOrg.id,
-			});
-		}
+		await this.offlineStorageHandler.updatePodcast({
+			id: podcastId,
+			title: podcastAtPodcastindexOrg.title,
+			description: podcastAtPodcastindexOrg.description,
+			link: podcastAtPodcastindexOrg.link,
+			imageUrl: podcastAtPodcastindexOrg.imageUrl,
+			podcastIndexOrgId: podcastAtPodcastindexOrg.id,
+			...(podcastAtPodcastindexOrg.value && {value: [podcastAtPodcastindexOrg.value]})
+		});
 
 		let episodes = await this.podcastIndexOrgClient.getEpisodes(podcast.feedUrl);
 
@@ -106,6 +106,10 @@ export class PodcastsControllerImplementation implements PodcastsController {
 
 	async getPodcast(feedUrl: string): Promise<PodcastView | undefined> {
 		return this.offlineStorageHandler.getPodcast(feedUrl);
+	}
+
+	async getPodcastById(id: number): Promise<PodcastView | undefined> {
+		return this.offlineStorageHandler.getPodcastById(id);
 	}
 
 	async updatePodcasts(): Promise<void> {

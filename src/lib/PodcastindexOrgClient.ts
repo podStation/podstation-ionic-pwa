@@ -1,9 +1,24 @@
+export type Destination = {
+	name: string,
+	type: string,
+	address: string,
+	split: number
+}
+
 export type Podcast = {
 	id: number,
 	title: string,
 	description: string,
 	link: string,
 	imageUrl: string,
+	value: {
+		model: {
+			type: string
+			method: string,
+			suggested: string,
+		},
+		destinations: Destination[]
+	}
 }
 
 export type Episode = {
@@ -43,6 +58,7 @@ export class PodcastIndexOrgClientImplementation implements PodcastindexOrgClien
 			description: jsonResponse.feed.title,
 			link: jsonResponse.feed.link,
 			imageUrl: jsonResponse.feed.image,
+			value: jsonResponse.feed.value
 		}
 	}
 

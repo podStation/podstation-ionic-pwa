@@ -1,4 +1,3 @@
-import { wait } from '@testing-library/react';
 import Dexie from 'dexie';
 
 // https://medium.com/@KevinBGreene/typescript-modeling-required-fields-with-mapped-types-f7bf17688786
@@ -11,6 +10,22 @@ type RequireOnly<T, K extends keyof T> = {
 type RequireOnlyId<T extends {id?: number}> = RequireOnly<T, 'id'>;
 export type RequireId<T extends {id?: number}> = Omit<T, 'id'> & {id: number};
 type OmitId<T extends {id?: number}> = Omit<T, 'id'>;
+
+export type Destination = {
+	name: string,
+	type?: string,
+	address: string,
+	split?: number
+}
+
+export type Value = {
+	model: {
+		type: string
+		method?: string,
+		suggested?: string,
+	},
+	destinations: Destination[]
+}
 
 export type Podcast = {
 	id?: number,
@@ -33,6 +48,8 @@ export type Podcast = {
 	subscribed: boolean,
 	podcastIndexOrgId?: number,
 	podcastIndexOrgLastEpisodeFetch?: Date,
+	
+	value?: Value[]
 }
 
 export type Episode = {
@@ -87,6 +104,7 @@ export default interface OfflineStorageHandler {
 	deletePodcastById(podcastId: number): PromiseLike<void>;
 	getPodcasts(): Promise<RequireId<Podcast>[]>;
 	getPodcast(feedUrl: string): Promise<RequireId<Podcast> | undefined>;
+	getPodcastById(id: number): Promise<RequireId<Podcast> | undefined>;
 	putEpisodes(episodes: Episode[]): Promise<void>;
 	updateEpisode(episode: RequireOnlyId<Episode>): Promise<void>;
 	getEpisodes(podcastId: number): Promise<RequireId<Episode>[]>
@@ -117,6 +135,12 @@ export class OfflineStorageHandlerImplementation implements OfflineStorageHandle
 
 	async getPodcast(feedUrl: string): Promise<RequireId<Podcast> | undefined> {
 		let result = await this.db.podcasts.where('feedUrl').equals(feedUrl).first();
+
+		return result ? result as RequireId<Podcast> : undefined;
+	}
+
+	async getPodcastById(id: number): Promise<RequireId<Podcast> | undefined> {
+		let result = await this.db.podcasts.get(id);
 
 		return result ? result as RequireId<Podcast> : undefined;
 	}

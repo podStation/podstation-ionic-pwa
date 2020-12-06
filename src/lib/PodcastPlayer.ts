@@ -1,4 +1,5 @@
 import { RangeValue } from '@ionic/core';
+import { Destination, Value } from './OfflineStorageHandler';
 import PodcastController, { PodcastsControllerImplementation, EpisodeView } from './PodcastsController'
 
 export type PodcastPlayerState = {
@@ -111,4 +112,74 @@ setInterval(() => {
 	if(playerState.isPlaying) {
 		podcastController.updateEpisodeCurrentTime(playerState.episode?.id as number, playerState.currentTime as number);
 	}
+
+	// WebMonetization using Probabilistic Revenue Share
+	if(playerState.episode && playerState.isPlaying) {
+		podcastController.getPodcastById(playerState.episode?.podcastId).then((podcast) => {
+			let value = podcast?.value && podcast?.value.find((value) => value.model.type === "webmonetization");
+			let pointer = pickPointer(value?.destinations || []);
+			updateWebMonetization(pointer);
+		})
+	}
+	else {
+		updateWebMonetization(undefined);
+	}
 }, 5000);
+
+function pickPointer(destinations: Destination[]): string | undefined {
+	let destinationsCopy: Destination[] = []
+	destinationsCopy.push(...destinations);
+	
+	destinationsCopy.push({
+		name: 'podStation',
+		address: '$ilp.uphold.com/z88hNfhJ9L6P',
+		split: 1
+	});
+
+	// based on https://webmonetization.org/docs/probabilistic-rev-sharing/
+	const sum = destinationsCopy.reduce((sum, destination) => sum + ensureInt(destination.split), 0);
+	let choice = Math.random() * sum;
+
+	for(const key in destinationsCopy) {
+		const destination = destinationsCopy[key];
+		if((choice -= (destination.split || 0)) <= 0) {
+			return destination.address;
+		}
+	}
+}
+
+function ensureInt(value: string | number | undefined): number {
+	let result: number
+	
+	switch(typeof value) {
+		case 'string':
+			result = parseInt(value);
+			break;
+		case 'number':
+			result = value;
+			break;
+		default:
+			result = 0;
+	}
+
+	return Math.max(result, 0);
+}
+
+function updateWebMonetization(pointer: string | undefined) {
+	let monetizationTag = document.querySelector('meta[name="monetization"]');
+	
+	if(pointer) {
+		if(monetizationTag) {
+			monetizationTag.setAttribute('content', pointer);
+		}
+		else {
+			monetizationTag = document.createElement('meta');
+			monetizationTag.setAttribute('name', 'monetization');
+			monetizationTag.setAttribute('content', pointer);
+			document.head.appendChild(monetizationTag);
+		}
+	}
+	else if(monetizationTag) {
+		monetizationTag.remove();
+	}
+}
