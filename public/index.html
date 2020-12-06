@@ -14,6 +14,11 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
 
+    <!-- After testing, it seems the tag has to exist on page load so that 
+    the website is recognized as accepting monetization by Coil's extension
+    This is removed after startup and only set when the use is playing audio -->
+    <meta name="monetization" content="$ilp.uphold.com/z88hNfhJ9L6P">
+
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
     <link rel="shortcut icon" type="image/png" href="%PUBLIC_URL%/assets/icon/favicon.png" />
