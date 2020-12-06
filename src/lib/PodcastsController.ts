@@ -1,7 +1,7 @@
 import OfflineStorageHandler, { OfflineStorageHandlerImplementation, Podcast, Episode, RequireId} from './OfflineStorageHandler';
 import PodcastindexOrgClient, { PodcastIndexOrgClientImplementation, Episode as PodcastIndexOrgEpisode } from './PodcastindexOrgClient';
 
-export type PodcastView = Podcast;
+export type PodcastView = RequireId<Podcast>;
 
 type PodcastToAdd = {
 	feedUrl: string,
@@ -20,6 +20,7 @@ export type EpisodeWithPodcastView = Episode & {
 export default interface PodcastsController {
 	addPodcast(podcast: PodcastToAdd): Promise<void>;
 	addPodcasts(podcasts: PodcastToAdd[]): Promise<void[]>;
+	deletePodcastById(podcastId: number): Promise<void>;
 	getPodcasts(): Promise<Array<PodcastView>>;
 	getPodcast(feedUrl: string): Promise<PodcastView | undefined>;
 	updatePodcasts(): Promise<void>;
@@ -70,6 +71,10 @@ export class PodcastsControllerImplementation implements PodcastsController {
 
 	async addPodcasts(podcasts: PodcastToAdd[]): Promise<void[]> {
 		return Promise.all(podcasts.map((podcast) => this.addPodcast(podcast)));
+	}
+
+	async deletePodcastById(podcastId: number): Promise<void> {
+		return this.offlineStorageHandler.deletePodcastById(podcastId);
 	}
 
 	private mapPodcastIndexOrgEpisodeToStorage(podcastIndexOrgEpisode: PodcastIndexOrgEpisode): Omit<Episode, 'podcastId'> {
@@ -170,13 +175,13 @@ export class PodcastsControllerImplementation implements PodcastsController {
 		});
 	}
 
-	private static addPodcastToEpisodes(episodes: RequireId<Episode>[], podcasts: RequireId<Podcast>[]): EpisodeWithPodcastView[] {
+	private static addPodcastToEpisodes(episodes: RequireId<Episode>[], podcasts: PodcastView[]): EpisodeWithPodcastView[] {
 		return episodes.map((episode) => {
-			let podcast = podcasts.find((p) => p.id === episode.podcastId);
+			let podcast = podcasts.find((p) => p.id === episode.podcastId) as PodcastView;
 
 			return {
 				...episode,
-				podcast: podcast as Podcast
+				podcast: podcast
 			}
 		});
 	}

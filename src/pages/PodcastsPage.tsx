@@ -1,9 +1,10 @@
-import { IonButtons, IonContent, IonHeader, IonImg, IonItem, IonLabel, IonList, IonMenuButton, IonRefresher, IonRefresherContent, IonThumbnail, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenuButton, IonRefresher, IonRefresherContent, IonThumbnail, IonTitle, IonToolbar } from '@ionic/react';
 import { RefresherEventDetail } from '@ionic/core';
 import React from 'react';
 import PodcastsController, {PodcastsControllerImplementation, PodcastView} from '../lib/PodcastsController';
 import PageWithFooter from './PageWithFooter';
 import ImgWithFallBack from '../components/ImgWithFallback';
+import { remove, removeCircleOutline, removeCircleSharp } from 'ionicons/icons';
 
 class PodcastsPageState {
 	podcasts: Array<PodcastView> = [];
@@ -17,14 +18,25 @@ export default class PodcastsPage extends React.Component<{}, PodcastsPageState>
 	}
 	
 	async componentDidMount() {
-		this.setState({
-			podcasts: await this.podcastsController.getPodcasts()
-		});
+		await this.setStateFromController();
 	}
 
 	async doRefresh(e: CustomEvent<RefresherEventDetail>) {
 		await this.podcastsController.updatePodcasts();
 		e.detail.complete();
+	}
+
+	async handleClickUnsubscribe(e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>, podcastId: number): Promise<void> {
+		e.preventDefault();
+		e.stopPropagation();
+		await this.podcastsController.deletePodcastById(podcastId);
+		await this.setStateFromController();
+	}
+
+	async setStateFromController() {
+		this.setState({
+			podcasts: await this.podcastsController.getPodcasts()
+		});
 	}
 
 	render() {
@@ -53,6 +65,7 @@ export default class PodcastsPage extends React.Component<{}, PodcastsPageState>
 									<h2>{podcast.title}</h2>
 									<p>{podcast.description}</p>
 								</IonLabel>
+								<IonButton slot="end" onClick={e => this.handleClickUnsubscribe(e, podcast.id)}><IonIcon ios={removeCircleOutline} md={removeCircleSharp}/></IonButton>
 							</IonItem>
 						))}
 					</IonList>

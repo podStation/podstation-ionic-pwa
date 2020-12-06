@@ -84,6 +84,7 @@ class Database extends Dexie {
 export default interface OfflineStorageHandler {
 	addPodcast(podcast: OmitId<Podcast>): Promise<number>;
 	updatePodcast(podcast: RequireOnlyId<Podcast>): Promise<void>;
+	deletePodcastById(podcastId: number): PromiseLike<void>;
 	getPodcasts(): Promise<RequireId<Podcast>[]>;
 	getPodcast(feedUrl: string): Promise<RequireId<Podcast> | undefined>;
 	putEpisodes(episodes: Episode[]): Promise<void>;
@@ -103,6 +104,11 @@ export class OfflineStorageHandlerImplementation implements OfflineStorageHandle
 
 	async updatePodcast(podcast: RequireOnlyId<Podcast>) {
 		await this.db.podcasts.update(podcast.id, podcast);
+	}
+
+	async deletePodcastById(podcastId: number): Promise<void> {
+		await this.db.episodes.where('podcastId').equals(podcastId).delete();
+		await this.db.podcasts.delete(podcastId);
 	}
 
 	async getPodcasts(): Promise<RequireId<Podcast>[]> {
